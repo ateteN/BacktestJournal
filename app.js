@@ -511,14 +511,46 @@ function setupModal() {
     fillDay(e.target.value);
   });
 
-  // Screenshot
+  // Screenshot tabs
+  document.getElementById("scrTabUrl").addEventListener("click", () => switchScrTab("url"));
+  document.getElementById("scrTabUpload").addEventListener("click", () => switchScrTab("upload"));
+
+  // URL preview button
+  document.getElementById("scrUrlPreviewBtn").addEventListener("click", () => {
+    const url = document.getElementById("screenshotUrl").value.trim();
+    if (url) { window._pendingUrl = url; previewScreenshot(url); }
+  });
+  // Also preview on Enter
+  document.getElementById("screenshotUrl").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      const url = document.getElementById("screenshotUrl").value.trim();
+      if (url) { window._pendingUrl = url; previewScreenshot(url); }
+    }
+  });
+
+  // File upload
   document.getElementById("screenshotUpload").addEventListener("click", () =>
     document.getElementById("screenshotFile").click());
   document.getElementById("screenshotFile").addEventListener("change", e => {
     if (e.target.files[0]) uploadScreenshot(e.target.files[0]);
   });
 
+  // Remove screenshot
+  document.getElementById("scrRemoveBtn").addEventListener("click", () => {
+    window._pendingUrl = null;
+    document.getElementById("screenshotPreviewWrap").classList.add("hidden");
+    document.getElementById("screenshotUrl").value = "";
+    document.getElementById("screenshotFile").value = "";
+  });
+
   document.getElementById("fDate").value = today();
+}
+
+function switchScrTab(tab) {
+  document.getElementById("scrTabUrl").classList.toggle("active", tab === "url");
+  document.getElementById("scrTabUpload").classList.toggle("active", tab === "upload");
+  document.getElementById("scrPanelUrl").classList.toggle("hidden", tab !== "url");
+  document.getElementById("scrPanelUpload").classList.toggle("hidden", tab !== "upload");
 }
 
 function today() { return new Date().toISOString().slice(0, 10); }
@@ -554,7 +586,11 @@ function openModal(id = null) {
     document.getElementById("fSession").value      = t.session   || "London";
     document.getElementById("fTags").value         = t.tags      || "";
     document.getElementById("fNotes").value        = t.notes     || "";
-    if (t.screenshot_url) previewScreenshot(t.screenshot_url);
+    if (t.screenshot_url) {
+      document.getElementById("screenshotUrl").value = t.screenshot_url;
+      window._pendingUrl = t.screenshot_url;
+      previewScreenshot(t.screenshot_url);
+    }
   } else {
     document.getElementById("modalTitle").textContent = "Log New Trade";
     document.getElementById("fDate").value = today();
@@ -585,10 +621,11 @@ function clearForm() {
   document.getElementById("fSession").value      = "London";
   document.getElementById("fTags").value         = "";
   document.getElementById("fNotes").value        = "";
-  document.getElementById("screenshotFile").value= "";
-  document.getElementById("screenshotPreview").classList.add("hidden");
+  document.getElementById("screenshotFile").value = "";
+  document.getElementById("screenshotUrl").value  = "";
+  document.getElementById("screenshotPreviewWrap").classList.add("hidden");
   document.getElementById("screenshotPreview").src = "";
-  document.getElementById("screenshotPlaceholder").classList.remove("hidden");
+  switchScrTab("url");
   window._pendingUrl = null;
 }
 
@@ -644,8 +681,8 @@ async function confirmDelete(id) {
 
 // ── SCREENSHOT ────────────────────────────────────────────────────────────
 async function uploadScreenshot(file) {
-  document.getElementById("screenshotPlaceholder").innerHTML =
-    `<span style="color:var(--text-soft)">Uploading…</span>`;
+  const placeholder = document.getElementById("screenshotPlaceholder");
+  placeholder.innerHTML = `<span style="color:var(--text-soft)">Uploading…</span>`;
 
   try {
     const ext  = file.name.split(".").pop();
@@ -657,17 +694,17 @@ async function uploadScreenshot(file) {
     previewScreenshot(data.publicUrl);
   } catch (e) {
     alert("Upload failed: " + e.message);
-    document.getElementById("screenshotPlaceholder").innerHTML =
-      `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-       <span>Click to upload chart screenshot</span>`;
+  } finally {
+    placeholder.innerHTML = `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      <span>Click to upload chart screenshot</span>`;
   }
 }
 
 function previewScreenshot(url) {
   const img = document.getElementById("screenshotPreview");
   img.src = url;
-  img.classList.remove("hidden");
-  document.getElementById("screenshotPlaceholder").classList.add("hidden");
+  document.getElementById("screenshotPreviewWrap").classList.remove("hidden");
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────

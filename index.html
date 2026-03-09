@@ -6,8 +6,6 @@
   <title>TradeVault</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="images/favicon.png" />
-  
 </head>
 <body>
 
@@ -221,13 +219,38 @@
 
       <input type="hidden" id="tradeId" />
 
-      <div class="upload-zone" id="screenshotUpload">
-        <img id="screenshotPreview" class="hidden" alt="preview" />
-        <div id="screenshotPlaceholder">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-          <span>Click to upload chart screenshot</span>
+      <!-- Screenshot: URL or Upload -->
+      <div class="screenshot-section">
+        <div class="screenshot-tabs">
+          <button class="scr-tab active" id="scrTabUrl">🔗 Paste TradingView Link</button>
+          <button class="scr-tab" id="scrTabUpload">📁 Upload File</button>
         </div>
-        <input type="file" id="screenshotFile" accept="image/*" class="hidden" />
+
+        <!-- URL input panel -->
+        <div class="scr-panel" id="scrPanelUrl">
+          <div class="url-input-row">
+            <input type="text" id="screenshotUrl" class="field-input" placeholder="Paste TradingView image link here…" />
+            <button class="btn-primary" id="scrUrlPreviewBtn">Preview</button>
+          </div>
+          <div class="scr-hint">In TradingView: Camera icon → Copy image link → paste above</div>
+        </div>
+
+        <!-- Upload panel -->
+        <div class="scr-panel hidden" id="scrPanelUpload">
+          <div class="upload-zone" id="screenshotUpload">
+            <div id="screenshotPlaceholder">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              <span>Click to upload chart screenshot</span>
+            </div>
+            <input type="file" id="screenshotFile" accept="image/*" class="hidden" />
+          </div>
+        </div>
+
+        <!-- Preview (shared) -->
+        <div id="screenshotPreviewWrap" class="hidden">
+          <img id="screenshotPreview" alt="chart preview" />
+          <button class="scr-remove" id="scrRemoveBtn">✕ Remove</button>
+        </div>
       </div>
 
       <div class="form-grid">
