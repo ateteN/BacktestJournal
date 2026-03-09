@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TradeVault — Premium Trading Journal</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name"><span class="gold">Trade</span>Vault</div>
+      <div class="brand-sub">Premium Trading Journal</div>
+    </div>
+
+    <div class="balance-card">
+      <div class="balance-label">Account Balance</div>
+      <div class="balance-value" id="sidebarBalance">$100,000.00</div>
+      <div class="balance-change" id="sidebarChange">$0.00 from $100k</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-tab="dashboard">
+        <span class="nav-icon">◈</span> Dashboard
+      </button>
+      <button class="nav-btn" data-tab="gallery">
+        <span class="nav-icon">⊞</span> Gallery
+      </button>
+      <button class="nav-btn" data-tab="list">
+        <span class="nav-icon">≡</span> List
+      </button>
+      <button class="nav-btn" data-tab="calendar">
+        <span class="nav-icon">◷</span> Calendar
+      </button>
+      <button class="nav-btn" data-tab="stats">
+        <span class="nav-icon">◉</span> Full Stats
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-gold" id="sidebarLogBtn">+ Log Trade</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN CONTENT ────────────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- DASHBOARD TAB -->
+    <section class="tab active" id="tab-dashboard">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Performance Overview</h1>
+          <p class="page-sub" id="dashSub">0 trades logged · Starting capital $100,000</p>
+        </div>
+        <button class="btn-gold" id="dashLogBtn">+ Log Trade</button>
+      </div>
+
+      <div class="stat-cards" id="statCards">
+        <div class="stat-card">
+          <div class="stat-label">Win Rate</div>
+          <div class="stat-value" id="statWinRate">—</div>
+          <div class="stat-sub" id="statWinRateSub">No trades yet</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Net P&L</div>
+          <div class="stat-value" id="statNetPnl">—</div>
+          <div class="stat-sub" id="statNetPnlSub">0.00% return</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Profit Factor</div>
+          <div class="stat-value" id="statPF">—</div>
+          <div class="stat-sub">Gross Win ÷ Gross Loss</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Risk : Reward</div>
+          <div class="stat-value" id="statRR">—</div>
+          <div class="stat-sub">Avg Win ÷ Avg Loss</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Max Drawdown</div>
+          <div class="stat-value" id="statDD">—</div>
+          <div class="stat-sub" id="statDDSub">—</div>
+        </div>
+      </div>
+
+      <div class="card" id="recentTradesCard">
+        <div class="card-header">
+          <span class="card-title">Recent Trades</span>
+          <button class="link-btn" id="viewAllBtn">View all →</button>
+        </div>
+        <div id="recentTradesList">
+          <div class="empty-state">
+            <div class="empty-icon">📒</div>
+            <div class="empty-title">No trades yet</div>
+            <div class="empty-sub">Log your first trade to start tracking performance</div>
+            <button class="btn-gold" id="emptyLogBtn">Log Your First Trade</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY TAB -->
+    <section class="tab" id="tab-gallery">
+      <div class="page-header">
+        <h1 class="page-title">Trade Gallery</h1>
+        <button class="btn-gold" id="galleryLogBtn">+ New Trade</button>
+      </div>
+      <div class="filters">
+        <input type="text" id="gallerySearch" class="search-input" placeholder="🔍 Search pair, strategy, tags…" />
+        <div class="filter-group" id="outcomeFilters">
+          <button class="filter-btn active" data-filter="outcome" data-value="All">All</button>
+          <button class="filter-btn" data-filter="outcome" data-value="Win">Win</button>
+          <button class="filter-btn" data-filter="outcome" data-value="Loss">Loss</button>
+          <button class="filter-btn" data-filter="outcome" data-value="Breakeven">Breakeven</button>
+        </div>
+        <div class="filter-group" id="dirFilters">
+          <button class="filter-btn active" data-filter="dir" data-value="All">All</button>
+          <button class="filter-btn" data-filter="dir" data-value="Long">Long</button>
+          <button class="filter-btn" data-filter="dir" data-value="Short">Short</button>
+        </div>
+      </div>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="empty-state">
+          <div class="empty-icon">⊞</div>
+          <div class="empty-title">No trades found</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIST TAB -->
+    <section class="tab" id="tab-list">
+      <div class="page-header">
+        <h1 class="page-title">Trade List</h1>
+        <button class="btn-gold" id="listLogBtn">+ New Trade</button>
+      </div>
+      <div class="card" style="overflow:hidden; padding:0;">
+        <div class="table-wrap">
+          <table class="trade-table">
+            <thead>
+              <tr>
+                <th>Pair</th>
+                <th>Outcome</th>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Duration</th>
+                <th>Direction</th>
+                <th>Strategy</th>
+                <th>Exit Reason</th>
+                <th>P&L</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listTableBody">
+              <tr>
+                <td colspan="11" class="empty-row">No trades logged yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDAR TAB -->
+    <section class="tab" id="tab-calendar">
+      <h1 class="page-title" style="margin-bottom:28px;">Trading Calendar</h1>
+      <div class="card">
+        <div class="cal-nav">
+          <button class="cal-arrow" id="calPrev">‹</button>
+          <span class="cal-month-label" id="calMonthLabel">Month Year</span>
+          <button class="cal-arrow" id="calNext">›</button>
+        </div>
+        <div class="cal-grid-header">
+          <div>Sun</div><div>Mon</div><div>Tue</div>
+          <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </section>
+
+    <!-- STATS TAB -->
+    <section class="tab" id="tab-stats">
+      <h1 class="page-title">Full Performance Stats</h1>
+      <p class="page-sub" id="statsSub">Auto-calculated · $100,000 starting capital</p>
+      <div id="statsTableWrap" style="margin-top:28px;">
+        <div class="empty-state">
+          <div class="empty-icon">◉</div>
+          <div class="empty-title">Log trades to see your stats</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── TRADE MODAL ─────────────────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="tradeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Log New Trade</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+
+      <input type="hidden" id="tradeId" />
+
+      <!-- Screenshot upload -->
+      <div class="screenshot-upload" id="screenshotUpload">
+        <img id="screenshotPreview" class="hidden" alt="screenshot" />
+        <div id="screenshotPlaceholder">📸 Click to upload trade screenshot</div>
+        <input type="file" id="screenshotFile" accept="image/*" class="hidden" />
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field-label">Pair</label>
+          <select id="fPair" class="field-input">
+            <option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option>
+            <option>USDCHF</option><option>AUDUSD</option><option>NZDUSD</option>
+            <option>USDCAD</option><option>GBPJPY</option><option>EURJPY</option>
+            <option>EURGBP</option><option>XAUUSD</option><option>GBPCHF</option>
+            <option>EURCAD</option><option>AUDCAD</option><option>Custom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Direction</label>
+          <select id="fDirection" class="field-input">
+            <option>Long</option><option>Short</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Outcome</label>
+          <select id="fOutcome" class="field-input">
+            <option>Win</option><option>Loss</option><option>Breakeven</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Date</label>
+          <input type="date" id="fDate" class="field-input" />
+        </div>
+        <div class="field">
+          <label class="field-label">Day</label>
+          <input type="text" id="fDay" class="field-input" placeholder="Auto-filled" readonly />
+        </div>
+        <div class="field">
+          <label class="field-label">Time Entered</label>
+          <input type="text" id="fTime" class="field-input" placeholder="09:30 AM" />
+        </div>
+        <div class="field">
+          <label class="field-label">Duration</label>
+          <input type="text" id="fDuration" class="field-input" placeholder="2h 30m" />
+        </div>
+        <div class="field">
+          <label class="field-label">P&L ($)</label>
+          <input type="number" id="fPnl" class="field-input" placeholder="e.g. 250 or -150" />
+        </div>
+        <div class="field">
+          <label class="field-label">Exit Reason</label>
+          <select id="fExitReason" class="field-input">
+            <option>Hit TP</option><option>Hit SL</option>
+            <option>Closed Early</option><option>Breakeven</option><option>Partial Close</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Strategy</label>
+          <select id="fStrategy" class="field-input">
+            <option>Strategy #1</option><option>Strategy #2</option>
+            <option>Strategy #3</option><option>Strategy #4</option><option>Custom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Session</label>
+          <select id="fSession" class="field-input">
+            <option>London</option><option>New York</option>
+            <option>Asian</option><option>London/NY Overlap</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Tags</label>
+          <input type="text" id="fTags" class="field-input" placeholder="fakeout, HTF, etc." />
+        </div>
+        <div class="field field-full">
+          <label class="field-label">Notes / Thoughts</label>
+          <textarea id="fNotes" class="field-input" rows="3" placeholder="What was your thesis? What did you learn?"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn-gold" id="modalSave">Save Trade ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
