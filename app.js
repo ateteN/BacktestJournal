@@ -508,9 +508,7 @@ function setupModal() {
 
   // Auto-fill day of week
   document.getElementById("fDate").addEventListener("change", e => {
-    const d = new Date(e.target.value + "T12:00:00");
-    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    document.getElementById("fDay").value = days[d.getDay()] || "";
+    fillDay(e.target.value);
   });
 
   // Screenshot
@@ -524,6 +522,13 @@ function setupModal() {
 }
 
 function today() { return new Date().toISOString().slice(0, 10); }
+
+function fillDay(dateStr) {
+  if (!dateStr) return;
+  const d = new Date(dateStr + "T12:00:00");
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  document.getElementById("fDay").value = days[d.getDay()] || "";
+}
 
 function openModal(id = null) {
   editingId = id;
@@ -539,6 +544,8 @@ function openModal(id = null) {
     document.getElementById("fOutcome").value      = t.outcome   || "Win";
     document.getElementById("fDate").value         = t.date      || today();
     document.getElementById("fDay").value          = t.day       || "";
+    // if day was never saved, auto-fill it now
+    if (!t.day && t.date) fillDay(t.date);
     document.getElementById("fTime").value         = t.time_entered || "";
     document.getElementById("fDuration").value     = t.duration  || "";
     document.getElementById("fPnl").value          = t.pnl ?? "";
@@ -551,6 +558,7 @@ function openModal(id = null) {
   } else {
     document.getElementById("modalTitle").textContent = "Log New Trade";
     document.getElementById("fDate").value = today();
+    fillDay(today());
   }
 
   document.getElementById("tradeModal").classList.remove("hidden");
