@@ -3,212 +3,228 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TradeVault — Premium Trading Journal</title>
+  <title>TradeVault</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
   <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-name"><span class="gold">Trade</span>Vault</div>
-      <div class="brand-sub">Premium Trading Journal</div>
+    <div class="sidebar-top">
+      <div class="logo">
+        <div class="logo-mark">TV</div>
+        <div>
+          <div class="logo-name">TradeVault</div>
+          <div class="logo-sub">Trading Journal</div>
+        </div>
+      </div>
+
+      <div class="balance-block">
+        <div class="balance-label">Account Balance</div>
+        <div class="balance-value" id="sidebarBalance">$100,000.00</div>
+        <div class="balance-delta" id="sidebarChange">+$0.00 · 0.00%</div>
+      </div>
+
+      <nav>
+        <button class="nav-btn active" data-tab="dashboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-btn" data-tab="gallery">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          Gallery
+        </button>
+        <button class="nav-btn" data-tab="list">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          List
+        </button>
+        <button class="nav-btn" data-tab="calendar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Calendar
+        </button>
+        <button class="nav-btn" data-tab="stats">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Full Stats
+        </button>
+      </nav>
     </div>
 
-    <div class="balance-card">
-      <div class="balance-label">Account Balance</div>
-      <div class="balance-value" id="sidebarBalance">$100,000.00</div>
-      <div class="balance-change" id="sidebarChange">$0.00 from $100k</div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <button class="nav-btn active" data-tab="dashboard">
-        <span class="nav-icon">◈</span> Dashboard
-      </button>
-      <button class="nav-btn" data-tab="gallery">
-        <span class="nav-icon">⊞</span> Gallery
-      </button>
-      <button class="nav-btn" data-tab="list">
-        <span class="nav-icon">≡</span> List
-      </button>
-      <button class="nav-btn" data-tab="calendar">
-        <span class="nav-icon">◷</span> Calendar
-      </button>
-      <button class="nav-btn" data-tab="stats">
-        <span class="nav-icon">◉</span> Full Stats
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button class="btn-gold" id="sidebarLogBtn">+ Log Trade</button>
+    <div class="sidebar-bottom">
+      <button class="btn-primary full-width" id="sidebarLogBtn">+ Log Trade</button>
     </div>
   </aside>
 
-  <!-- ── MAIN CONTENT ────────────────────────────────────────────────── -->
-  <main class="main-content">
+  <main class="main">
 
-    <!-- DASHBOARD TAB -->
+    <!-- DASHBOARD -->
     <section class="tab active" id="tab-dashboard">
       <div class="page-header">
         <div>
-          <h1 class="page-title">Performance Overview</h1>
-          <p class="page-sub" id="dashSub">0 trades logged · Starting capital $100,000</p>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-sub" id="dashSub">0 trades · $100,000 starting capital</p>
         </div>
-        <button class="btn-gold" id="dashLogBtn">+ Log Trade</button>
+        <button class="btn-primary" id="dashLogBtn">+ Log Trade</button>
       </div>
 
-      <div class="stat-cards" id="statCards">
+      <div class="stat-row">
         <div class="stat-card">
           <div class="stat-label">Win Rate</div>
           <div class="stat-value" id="statWinRate">—</div>
-          <div class="stat-sub" id="statWinRateSub">No trades yet</div>
+          <div class="stat-hint" id="statWinRateSub">No trades yet</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Net P&L</div>
           <div class="stat-value" id="statNetPnl">—</div>
-          <div class="stat-sub" id="statNetPnlSub">0.00% return</div>
+          <div class="stat-hint" id="statNetPnlSub">0.00% return</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Profit Factor</div>
           <div class="stat-value" id="statPF">—</div>
-          <div class="stat-sub">Gross Win ÷ Gross Loss</div>
+          <div class="stat-hint">Gross wins ÷ gross losses</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Risk : Reward</div>
+          <div class="stat-label">Avg R:R</div>
           <div class="stat-value" id="statRR">—</div>
-          <div class="stat-sub">Avg Win ÷ Avg Loss</div>
+          <div class="stat-hint">Avg win ÷ avg loss</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Max Drawdown</div>
           <div class="stat-value" id="statDD">—</div>
-          <div class="stat-sub" id="statDDSub">—</div>
+          <div class="stat-hint" id="statDDSub">—</div>
         </div>
       </div>
 
-      <div class="card" id="recentTradesCard">
-        <div class="card-header">
-          <span class="card-title">Recent Trades</span>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Recent Trades</span>
           <button class="link-btn" id="viewAllBtn">View all →</button>
         </div>
         <div id="recentTradesList">
           <div class="empty-state">
-            <div class="empty-icon">📒</div>
+            <div class="empty-icon">📋</div>
             <div class="empty-title">No trades yet</div>
-            <div class="empty-sub">Log your first trade to start tracking performance</div>
-            <button class="btn-gold" id="emptyLogBtn">Log Your First Trade</button>
+            <div class="empty-body">Log your first trade to start tracking</div>
+            <button class="btn-primary" onclick="openModal()">Log First Trade</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GALLERY TAB -->
+    <!-- GALLERY -->
     <section class="tab" id="tab-gallery">
       <div class="page-header">
-        <h1 class="page-title">Trade Gallery</h1>
-        <button class="btn-gold" id="galleryLogBtn">+ New Trade</button>
+        <h1 class="page-title">Gallery</h1>
+        <button class="btn-primary" id="galleryLogBtn">+ New Trade</button>
       </div>
-      <div class="filters">
-        <input type="text" id="gallerySearch" class="search-input" placeholder="🔍 Search pair, strategy, tags…" />
-        <div class="filter-group" id="outcomeFilters">
+      <div class="filter-bar">
+        <input type="text" id="gallerySearch" class="search-input" placeholder="Search pair, strategy, tags…" />
+        <div class="filter-group">
           <button class="filter-btn active" data-filter="outcome" data-value="All">All</button>
           <button class="filter-btn" data-filter="outcome" data-value="Win">Win</button>
           <button class="filter-btn" data-filter="outcome" data-value="Loss">Loss</button>
-          <button class="filter-btn" data-filter="outcome" data-value="Breakeven">Breakeven</button>
+          <button class="filter-btn" data-filter="outcome" data-value="Breakeven">BE</button>
         </div>
-        <div class="filter-group" id="dirFilters">
+        <div class="filter-group">
           <button class="filter-btn active" data-filter="dir" data-value="All">All</button>
           <button class="filter-btn" data-filter="dir" data-value="Long">Long</button>
           <button class="filter-btn" data-filter="dir" data-value="Short">Short</button>
         </div>
       </div>
       <div class="gallery-grid" id="galleryGrid">
-        <div class="empty-state">
-          <div class="empty-icon">⊞</div>
-          <div class="empty-title">No trades found</div>
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-icon">🖼️</div>
+          <div class="empty-title">No trades yet</div>
         </div>
       </div>
     </section>
 
-    <!-- LIST TAB -->
+    <!-- LIST -->
     <section class="tab" id="tab-list">
       <div class="page-header">
-        <h1 class="page-title">Trade List</h1>
-        <button class="btn-gold" id="listLogBtn">+ New Trade</button>
+        <h1 class="page-title">All Trades</h1>
+        <button class="btn-primary" id="listLogBtn">+ New Trade</button>
       </div>
-      <div class="card" style="overflow:hidden; padding:0;">
-        <div class="table-wrap">
-          <table class="trade-table">
+      <div class="panel" style="padding:0;overflow:hidden;">
+        <div class="table-scroll">
+          <table class="data-table">
             <thead>
               <tr>
-                <th>Pair</th>
-                <th>Outcome</th>
-                <th>Date</th>
-                <th>Day</th>
-                <th>Time</th>
-                <th>Duration</th>
-                <th>Direction</th>
-                <th>Strategy</th>
-                <th>Exit Reason</th>
-                <th>P&L</th>
-                <th>Actions</th>
+                <th>Pair</th><th>Outcome</th><th>Date</th><th>Day</th>
+                <th>Time</th><th>Duration</th><th>Direction</th>
+                <th>Strategy</th><th>Exit Reason</th><th>P&L</th><th></th>
               </tr>
             </thead>
-            <tbody id="listTableBody">
-              <tr>
-                <td colspan="11" class="empty-row">No trades logged yet</td>
-              </tr>
+            <tbody id="listBody">
+              <tr><td colspan="11" class="empty-row">No trades logged yet</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- CALENDAR TAB -->
+    <!-- CALENDAR -->
     <section class="tab" id="tab-calendar">
-      <h1 class="page-title" style="margin-bottom:28px;">Trading Calendar</h1>
-      <div class="card">
+      <h1 class="page-title" style="margin-bottom:24px">Calendar</h1>
+      <div class="panel">
         <div class="cal-nav">
-          <button class="cal-arrow" id="calPrev">‹</button>
-          <span class="cal-month-label" id="calMonthLabel">Month Year</span>
-          <button class="cal-arrow" id="calNext">›</button>
+          <select id="calMonthSelect" class="cal-select">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+          </select>
+          <select id="calYearSelect" class="cal-select"></select>
         </div>
-        <div class="cal-grid-header">
-          <div>Sun</div><div>Mon</div><div>Tue</div>
-          <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+        <div class="cal-week-header">
+          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+          <div>Thu</div><div>Fri</div><div>Sat</div>
         </div>
         <div class="cal-grid" id="calGrid"></div>
       </div>
     </section>
 
-    <!-- STATS TAB -->
+    <!-- STATS -->
     <section class="tab" id="tab-stats">
-      <h1 class="page-title">Full Performance Stats</h1>
-      <p class="page-sub" id="statsSub">Auto-calculated · $100,000 starting capital</p>
-      <div id="statsTableWrap" style="margin-top:28px;">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Performance Stats</h1>
+          <p class="page-sub" id="statsSub">Auto-calculated · $100,000 starting capital</p>
+        </div>
+      </div>
+      <div id="statsWrap">
         <div class="empty-state">
-          <div class="empty-icon">◉</div>
-          <div class="empty-title">Log trades to see your stats</div>
+          <div class="empty-icon">📊</div>
+          <div class="empty-title">Log trades to see stats</div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ── TRADE MODAL ─────────────────────────────────────────────────── -->
+  <!-- MODAL -->
   <div class="modal-overlay hidden" id="tradeModal">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Log New Trade</h2>
-        <button class="modal-close" id="modalClose">✕</button>
+        <button class="icon-btn" id="modalClose">✕</button>
       </div>
 
       <input type="hidden" id="tradeId" />
 
-      <!-- Screenshot upload -->
-      <div class="screenshot-upload" id="screenshotUpload">
-        <img id="screenshotPreview" class="hidden" alt="screenshot" />
-        <div id="screenshotPlaceholder">📸 Click to upload trade screenshot</div>
+      <div class="upload-zone" id="screenshotUpload">
+        <img id="screenshotPreview" class="hidden" alt="preview" />
+        <div id="screenshotPlaceholder">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <span>Click to upload chart screenshot</span>
+        </div>
         <input type="file" id="screenshotFile" accept="image/*" class="hidden" />
       </div>
 
@@ -253,7 +269,7 @@
         </div>
         <div class="field">
           <label class="field-label">P&L ($)</label>
-          <input type="number" id="fPnl" class="field-input" placeholder="e.g. 250 or -150" />
+          <input type="number" id="fPnl" class="field-input" placeholder="250 or -150" />
         </div>
         <div class="field">
           <label class="field-label">Exit Reason</label>
@@ -278,22 +294,24 @@
         </div>
         <div class="field">
           <label class="field-label">Tags</label>
-          <input type="text" id="fTags" class="field-input" placeholder="fakeout, HTF, etc." />
+          <input type="text" id="fTags" class="field-input" placeholder="fakeout, HTF…" />
         </div>
         <div class="field field-full">
-          <label class="field-label">Notes / Thoughts</label>
-          <textarea id="fNotes" class="field-input" rows="3" placeholder="What was your thesis? What did you learn?"></textarea>
+          <label class="field-label">Notes</label>
+          <textarea id="fNotes" class="field-input" rows="3" placeholder="Thesis, observations, lessons learned…"></textarea>
         </div>
       </div>
 
-      <div class="modal-actions">
+      <div class="modal-footer">
         <button class="btn-ghost" id="modalCancel">Cancel</button>
-        <button class="btn-gold" id="modalSave">Save Trade ✓</button>
+        <button class="btn-primary" id="modalSave">Save Trade</button>
       </div>
     </div>
   </div>
 
-  <!-- Supabase CDN -->
+  <!-- Mobile FAB -->
+  <button class="fab" id="fabBtn" onclick="openModal()">+</button>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="app.js"></script>
 </body>
