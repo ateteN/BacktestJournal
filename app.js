@@ -48,16 +48,7 @@ function renderAll() {
 }
 
 // ── STATS CALCULATION ─────────────────────────────────────────────────────
-/*
-  RULES:
-  - Win Rate   = wins / (wins + losses)   — breakeven excluded from rate
-  - Profit Factor = gross wins / gross losses — breakeven trades excluded
-  - Breakeven trades count toward totals but not win/loss calculations
-  - If no losses exist yet, Profit Factor = gross wins / 0 → shown as "∞"
-  - Avg Win / Avg Loss only use winning / losing trades respectively
-*/
 function calcStats(subset) {
-  // Only count trades that have an outcome and pnl
   const closed = subset.filter(t =>
     ["Win", "Loss", "Breakeven"].includes(t.outcome)
   );
@@ -67,44 +58,34 @@ function calcStats(subset) {
   const losses = closed.filter(t => t.outcome === "Loss");
   const bes    = closed.filter(t => t.outcome === "Breakeven");
 
-  // P&L sums
   const totalPnl  = closed.reduce((s, t) => s + (t.pnl || 0), 0);
   const grossWin  = wins.reduce((s, t) => s + (t.pnl || 0), 0);
   const grossLoss = Math.abs(losses.reduce((s, t) => s + (t.pnl || 0), 0));
 
-  // Win rate: wins vs (wins + losses), breakeven not counted
   const decisiveTrades = wins.length + losses.length;
   const winRate = decisiveTrades > 0
     ? (wins.length / decisiveTrades) * 100
-    : null; // not enough data
+    : null;
 
-  // Averages
   const avgWin  = wins.length   ? grossWin  / wins.length   : 0;
   const avgLoss = losses.length ? grossLoss / losses.length : 0;
 
-  // Profit factor: if no losses yet, use Infinity
   let profitFactor;
   if (grossLoss === 0 && grossWin === 0) profitFactor = null;
   else if (grossLoss === 0)              profitFactor = Infinity;
   else                                   profitFactor = grossWin / grossLoss;
 
-  // R:R
   const rr = avgLoss > 0 ? avgWin / avgLoss : null;
 
-  // Expected value per trade
   const ev = winRate !== null
     ? (winRate / 100) * avgWin - ((100 - winRate) / 100) * avgLoss
     : null;
 
-  // Net %
   const netPct = (totalPnl / CAPITAL) * 100;
 
-  // Largest trades
-  const sortByPnl = [...closed].sort((a, b) => (b.pnl || 0) - (a.pnl || 0));
   const largestWin  = wins.length   ? wins.reduce((b, t) => (t.pnl > b.pnl ? t : b)).pnl   : null;
   const largestLoss = losses.length ? losses.reduce((b, t) => (t.pnl < b.pnl ? t : b)).pnl : null;
 
-  // Drawdown — walk trades chronologically (oldest first)
   const chrono = [...closed].reverse();
   let peak = CAPITAL, bal = CAPITAL, maxDD = 0, maxDDpct = 0;
   chrono.forEach(t => {
@@ -115,12 +96,11 @@ function calcStats(subset) {
     if (dd > maxDD) { maxDD = dd; maxDDpct = ddPct; }
   });
 
-  // Consecutive streaks (chronological)
   let maxCW = 0, maxCL = 0, cW = 0, cL = 0;
   chrono.forEach(t => {
     if      (t.outcome === "Win")  { cW++; cL = 0; if (cW > maxCW) maxCW = cW; }
     else if (t.outcome === "Loss") { cL++; cW = 0; if (cL > maxCL) maxCL = cL; }
-    else                           { cW = 0; cL = 0; } // breakeven resets streak
+    else                           { cW = 0; cL = 0; }
   });
 
   return {
@@ -219,7 +199,6 @@ function renderDashboard() {
     return;
   }
 
-  // Win Rate — only if we have decisive trades
   if (s.winRate !== null) {
     set("statWinRate", s.winRate.toFixed(1) + "%", s.winRate >= 50 ? "var(--win)" : "var(--loss)");
     document.getElementById("statWinRateSub").textContent =
@@ -229,24 +208,19 @@ function renderDashboard() {
     document.getElementById("statWinRateSub").textContent = "Need win + loss data";
   }
 
-  // Net P&L
   set("statNetPnl", f$(s.totalPnl), s.totalPnl >= 0 ? "var(--win)" : "var(--loss)");
   document.getElementById("statNetPnlSub").textContent = fPct(s.netPct) + " return";
 
-  // Profit Factor
   if (s.profitFactor === null) {
     set("statPF", "—");
   } else if (!isFinite(s.profitFactor)) {
-    set("statPF", "∞", "var(--win)"); // all wins, no losses yet
+    set("statPF", "∞", "var(--win)");
   } else {
     set("statPF", fNum(s.profitFactor),
       s.profitFactor >= 1.5 ? "var(--win)" : s.profitFactor >= 1 ? "var(--be)" : "var(--loss)");
   }
 
-  // R:R
   set("statRR", s.rr !== null ? fNum(s.rr) + "R" : "—");
-
-  // Max Drawdown
   set("statDD", fPct(-s.maxDDpct), s.maxDDpct < 10 ? "var(--win)" : s.maxDDpct < 20 ? "var(--be)" : "var(--loss)");
   document.getElementById("statDDSub").textContent = f$(-s.maxDD);
 
@@ -381,7 +355,6 @@ function renderCalendar() {
 }
 
 function setupCalendarNav() {
-  // populate year dropdown 2000 → current year + 2
   const yearSel = document.getElementById("calYearSelect");
   const currentYear = new Date().getFullYear();
   for (let y = currentYear + 2; y >= 2000; y--) {
@@ -415,7 +388,6 @@ function renderStats() {
   const longs = calcStats(trades.filter(t => t.direction === "Long"));
   const shorts= calcStats(trades.filter(t => t.direction === "Short"));
 
-  // Helper: render one cell
   const cell = (s, fn) => {
     if (!s) return `<td style="color:var(--text-soft)">—</td>`;
     try { const v = fn(s); return `<td>${v ?? "—"}</td>`; }
@@ -428,7 +400,6 @@ function renderStats() {
   const sec = (label) =>
     `<tr class="stats-section"><td colspan="4">${label}</td></tr>`;
 
-  // Win rate display with note about breakeven
   const wrDisplay = (s) => {
     if (s.winRate === null) return "—";
     return s.winRate.toFixed(1) + "%";
@@ -506,21 +477,17 @@ function setupModal() {
     if (e.target.id === "tradeModal") closeModal();
   });
 
-  // Auto-fill day of week
   document.getElementById("fDate").addEventListener("change", e => {
     fillDay(e.target.value);
   });
 
-  // Screenshot tabs
   document.getElementById("scrTabUrl").addEventListener("click", () => switchScrTab("url"));
   document.getElementById("scrTabUpload").addEventListener("click", () => switchScrTab("upload"));
 
-  // URL preview button
   document.getElementById("scrUrlPreviewBtn").addEventListener("click", () => {
     const url = document.getElementById("screenshotUrl").value.trim();
     if (url) { window._pendingUrl = url; previewScreenshot(url); }
   });
-  // Also preview on Enter
   document.getElementById("screenshotUrl").addEventListener("keydown", e => {
     if (e.key === "Enter") {
       const url = document.getElementById("screenshotUrl").value.trim();
@@ -528,14 +495,12 @@ function setupModal() {
     }
   });
 
-  // File upload
   document.getElementById("screenshotUpload").addEventListener("click", () =>
     document.getElementById("screenshotFile").click());
   document.getElementById("screenshotFile").addEventListener("change", e => {
     if (e.target.files[0]) uploadScreenshot(e.target.files[0]);
   });
 
-  // Remove screenshot
   document.getElementById("scrRemoveBtn").addEventListener("click", () => {
     window._pendingUrl = null;
     document.getElementById("screenshotPreviewWrap").classList.add("hidden");
@@ -576,11 +541,10 @@ function openModal(id = null) {
     document.getElementById("fOutcome").value      = t.outcome   || "Win";
     document.getElementById("fDate").value         = t.date      || today();
     document.getElementById("fDay").value          = t.day       || "";
-    // if day was never saved, auto-fill it now
     if (!t.day && t.date) fillDay(t.date);
     document.getElementById("fTime").value         = t.time_entered || "";
     document.getElementById("fDuration").value     = t.duration  || "";
-    document.getElementById("fPnl").value          = t.pnl ?? "";
+    document.getElementById("fPnl").value          = t.pnl !== null && t.pnl !== undefined ? Math.abs(t.pnl) : "";
     document.getElementById("fExitReason").value   = t.exit_reason || "Hit TP";
     document.getElementById("fStrategy").value     = t.strategy  || "Strategy #1";
     document.getElementById("fSession").value      = t.session   || "London";
@@ -634,15 +598,24 @@ async function saveTrade() {
   btn.textContent = "Saving…"; btn.disabled = true;
 
   const pnlVal = document.getElementById("fPnl").value;
+  const outcome = document.getElementById("fOutcome").value;
+
+  // ── FIX: always store losses as negative, wins/BE as positive ──
+  let pnl = null;
+  if (pnlVal !== "") {
+    const abs = Math.abs(parseFloat(pnlVal));
+    pnl = outcome === "Loss" ? -abs : abs;
+  }
+
   const payload = {
     pair:           document.getElementById("fPair").value,
     direction:      document.getElementById("fDirection").value,
-    outcome:        document.getElementById("fOutcome").value,
+    outcome:        outcome,
     date:           document.getElementById("fDate").value,
     day:            document.getElementById("fDay").value,
     time_entered:   document.getElementById("fTime").value,
     duration:       document.getElementById("fDuration").value,
-    pnl:            pnlVal !== "" ? parseFloat(pnlVal) : null,
+    pnl:            pnl,
     exit_reason:    document.getElementById("fExitReason").value,
     strategy:       document.getElementById("fStrategy").value,
     session:        document.getElementById("fSession").value,
